@@ -6,22 +6,24 @@ zotero:
 email:
   sender: ${oc.env:SENDER}
   receiver: ${oc.env:RECEIVER}
-  smtp_server: smtp.qq.com
-  smtp_port: 465
+  smtp_server: ${oc.env:SMTP_SERVER}
+  smtp_port: ${oc.decode:${oc.env:SMTP_PORT}}
   sender_password: ${oc.env:SENDER_PASSWORD}
 
 llm:
   api:
-    key: ${oc.env:OPENAI_API_KEY}
-    base_url: ${oc.env:OPENAI_API_BASE}
+    key: ${oc.env:GEMINI_API_KEY}
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai/
   api_mode: chat_completion
   generation_kwargs:
-    model: gpt-4o-mini
+    model: gemini-4-hydrogen
+  language: ${oc.env:LANGUAGE,Chinese}
 
 source:
   arxiv:
-    category: ["cs.AI","cs.CV","cs.LG","cs.CL"]
+    # Preserve the existing RSS query, including any '+'-joined categories.
+    category: ["${oc.env:ARXIV_QUERY}"]
 
 executor:
-  debug: ${oc.env:DEBUG,null}
+  debug: ${oc.decode:${oc.env:DEBUG,false}}
   source: ['arxiv']
